@@ -1,0 +1,47 @@
+# Render Blueprint: New > Blueprint > pick this repo. Creates the database, the API and the static site.
+# After the first deploy, set the two variables marked "set me" (they depend on the URLs Render assigns).
+databases:
+  - name: issue-tracker-db
+    databaseName: issue_tracker
+    user: issue_tracker
+    plan: free
+
+services:
+  - type: web
+    name: issue-tracker-api
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DB_HOST
+        fromDatabase: { name: issue-tracker-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: issue-tracker-db, property: port }
+      - key: DB_NAME
+        fromDatabase: { name: issue-tracker-db, property: database }
+      - key: DB_USER
+        fromDatabase: { name: issue-tracker-db, property: user }
+      - key: DB_PASSWORD
+        fromDatabase: { name: issue-tracker-db, property: password }
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ALLOWED_ORIGINS # set me: the URL of the static site, e.g. https://issue-tracker-web.onrender.com
+        sync: false
+      - key: SEED_DEMO_DATA # "true" loads demo users with PUBLIC passwords; leave false for anything real
+        value: "false"
+
+  - type: web
+    name: issue-tracker-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL # set me: the URL of the API service, e.g. https://issue-tracker-api.onrender.com
+        sync: false

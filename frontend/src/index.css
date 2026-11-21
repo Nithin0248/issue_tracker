@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply font-sans text-ink;
+  }
+  body {
+    @apply bg-chalk antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight;
+  }
+  :focus-visible {
+    outline: 2px solid #1f6b52;
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: #ddebe4;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-card px-3.5 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-spruce text-white hover:bg-spruce-dark;
+  }
+  .btn-secondary {
+    @apply border border-line-strong bg-surface text-ink hover:bg-chalk;
+  }
+  .btn-ghost {
+    @apply text-ink-soft hover:bg-lane hover:text-ink;
+  }
+  .btn-danger {
+    @apply bg-signal-critical text-white hover:bg-[#a52e24];
+  }
+  .input {
+    @apply w-full rounded-card border border-line-strong bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-faint disabled:bg-chalk disabled:text-ink-soft;
+  }
+  .label {
+    @apply mb-1 block text-sm font-medium text-ink;
+  }
+  .key-text {
+    @apply font-display text-[13px] font-semibold tabular-nums tracking-normal text-ink-soft;
+  }
+}
+
+/* One purposeful motion: the ticket panel slides in when you open a ticket. */
+@keyframes drawer-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.drawer-in {
+  animation: drawer-in 180ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
